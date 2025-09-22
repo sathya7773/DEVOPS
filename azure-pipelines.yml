@@ -1,30 +1,23 @@
-# Azure DevOps Pipeline for Python code
-
 trigger:
   branches:
     include:
-      - main   # or your branch name
+      - main
 
 pool:
-  vmImage: ubuntu-latest   # Ubuntu agent, comes with Python preinstalled
+  name: Default   # <-- your agent pool name
 
 steps:
-# Step 1: Checkout the repo
 - checkout: self
 
-# Step 2: Set up Python
 - task: UsePythonVersion@0
   inputs:
-    versionSpec: '3.x'       # Use any Python 3 version
+    versionSpec: '3.x'
     addToPath: true
 
-# Step 3: Install dependencies (if you have requirements.txt)
 - script: |
     python -m pip install --upgrade pip
     if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
   displayName: 'Install Python dependencies'
 
-# Step 4: Run your Python script
 - script: python hello.py
   displayName: 'Run hello.py'
-
