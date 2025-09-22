@@ -1,0 +1,38 @@
+trigger:
+- main   # Or the branch you want to trigger the pipeline
+
+pool:
+  vmImage: ubuntu-latest   # Use Microsoft-hosted Ubuntu agent
+
+steps:
+# Step 1: Checkout code from GitHub
+- checkout: self
+
+# Step 2: Set up Python
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.10'   # Change to your Python version (e.g., 3.8, 3.9, 3.11)
+    addToPath: true
+
+# Step 3: Install dependencies
+- script: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+  displayName: 'Install dependencies'
+
+# Step 4: Run tests (pytest, unittest, or your test framework)
+- script: |
+    pytest --maxfail=1 --disable-warnings -q
+  displayName: 'Run tests'
+
+# Step 5: (Optional) Linting/Code Quality
+- script: |
+    pip install flake8
+    flake8 .
+  displayName: 'Lint Python code'
+
+# Step 6: (Optional) Build or Deploy
+# Example: Packaging your app
+# - script: |
+#     python setup.py sdist bdist_wheel
+#   displayName: 'Build package'
